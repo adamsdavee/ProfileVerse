@@ -26,7 +26,7 @@ export default function Home() {
   const [isValidAddress, setIsValidAddress] = useState(false);
 
   // Support wallet address
-  const supportWalletAddress = "0x103ed903c8D0E77abC6B8CA6B73Ef064196aD849";
+  const supportWalletAddress = "0x557d382364d449500335ce8c7fF02cA72B34Cfb9";
 
   useEffect(() => {
     setIsValidAddress(isValidEthereumAddress(searchInput));
