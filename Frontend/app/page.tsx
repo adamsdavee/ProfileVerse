@@ -4,6 +4,7 @@ import Image from "next/image";
 import {client} from "./client";
 import { ConnectButton, SocialProfile } from "thirdweb/react";
 import { useEffect, useState } from "react";
+import { getSocialProfiles } from "thirdweb/social";
 
 type FilterType = "all" | "ens" | "farcaster" | "lens";
 
@@ -14,7 +15,7 @@ const isValidEthereumAddress = (address: string) => {
 export default function Home() {
 
   const [searchInput, setSearchInput] = useState("");
-  const [searchAddress, setSearchAddress] = useState("");
+  const [searchedAddress, setSearchedAddress] = useState("");
   const [userProfiles, setUserProfiles] = useState<SocialProfile[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [hasSearched, setHasSearched] = useState(false);
@@ -24,7 +25,37 @@ export default function Home() {
 
   useEffect(() => {
     setIsValidAddress(isValidEthereumAddress(searchInput));
+    console.log(isValidAddress);
   }, [searchInput])
+
+  const handleSearch = async () => {
+    console.log("Inside")
+    if(!isValidAddress) return;
+
+    console.log("Here")
+
+    setIsLoading(true);
+    setSearchedAddress(searchInput);
+    try {
+
+      console.log("Reached")
+
+      const profiles = await getSocialProfiles({
+        address: searchedAddress, 
+        client: client
+      });
+
+      console.log(profiles);
+
+      setUserProfiles(profiles);
+      setHasSearched(true);
+    } catch(e) {
+      alert(e);
+    } finally {
+      setIsLoading(false);
+      setSearchInput("");
+    }
+  }
 
  
 
@@ -46,8 +77,8 @@ export default function Home() {
 
           <button
           className="bg-blue-600 text-white px-4 py-5 rounded-md hover:bg-blue-700"
-          onClick={() => {}}
-          disabled={isLoading || isValidAddress}
+          onClick={() => handleSearch()}
+          disabled={isLoading || !isValidAddress}
           >
             {isLoading ? "Searching" : "Search"}
           </button>
