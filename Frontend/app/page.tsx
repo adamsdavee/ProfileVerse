@@ -5,6 +5,7 @@ import {client} from "./client";
 import { ConnectButton, SocialProfile } from "thirdweb/react";
 import { useEffect, useState } from "react";
 import { getSocialProfiles } from "thirdweb/social";
+import { shortenAddress } from "thirdweb/utils";
 
 type FilterType = "all" | "ens" | "farcaster" | "lens";
 
@@ -57,6 +58,10 @@ export default function Home() {
     }
   }
 
+  const filteredProfiles = userProfiles.filter(profile => 
+    activeFilter === "all" || profile.type === activeFilter
+  );
+
  
 
   return (
@@ -76,7 +81,7 @@ export default function Home() {
           />
 
           <button
-          className="bg-blue-600 text-white px-4 py-5 rounded-md hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-5 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2"
           onClick={() => handleSearch()}
           disabled={isLoading || !isValidAddress}
           >
@@ -84,6 +89,43 @@ export default function Home() {
           </button>
 
         </div>
+
+        {searchInput && !isValidAddress && (
+          <p className="text-red-500 text-xs text-left mt-1">Please enter valid Ethereum address</p>
+        )}
+
+        {hasSearched && (
+          <>
+            <p className="text-sm text-gray-400 mb-4">Search results for: {shortenAddress(searchedAddress)} </p>
+            <div className="flex space-x-2 bg-zinc-800 p-1 rounded-lg">
+              {["all", "ens", "farcaster", "lens"].map((filter) => (
+                <a
+                  key={filter}
+                  className={`px-3 py-2 text-small font-medium rounded-md transition-colors ${activeFilter === filter ? "bg-blue-600 text-white" : "text-gray-400 hover:bg-zinc-700 hover:text-white"}`}
+                  onClick={() => setActiveFilter(filter as FilterType)}
+                  >
+                    {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                  </a>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
+              {isLoading ? (
+                Array(3).fill(0).map((_, index) => <CardSkeleton key={index} />)
+              ) : hasSearched && filteredProfiles.length > 0 ? (
+                filteredProfiles.map((profile, index) => (
+                  <div key={index} className="w-full h-full">
+                    {profile.type === "ens" && <ENSCard profile={profile} />}
+                    {profile.type === "farcaster" && <FarcasterCard profile={profile} />}
+                    {profile.type === "lens" && <LensCard profile={profile} />}
+                  </div>
+                ))
+              ) : hasSearched ? (
+                <p className="text-center text-gray-500 col-span-full">No profile found for this address</p>
+              ): null}
+            </div>
+          </>
+        )}
       </div>
 
     </main>
