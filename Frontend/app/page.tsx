@@ -6,6 +6,8 @@ import { ConnectButton, SocialProfile } from "thirdweb/react";
 import { useEffect, useState } from "react";
 import { getSocialProfiles } from "thirdweb/social";
 import { shortenAddress } from "thirdweb/utils";
+import CardSkeleton from "./components/CardSkeleton";
+import ENSCard from "./components/ENSCard";
 
 type FilterType = "all" | "ens" | "farcaster" | "lens";
 
@@ -115,9 +117,9 @@ export default function Home() {
               ) : hasSearched && filteredProfiles.length > 0 ? (
                 filteredProfiles.map((profile, index) => (
                   <div key={index} className="w-full h-full">
-                    {profile.type === "ens" && <ENSCard profile={profile} />}
-                    {profile.type === "farcaster" && <FarcasterCard profile={profile} />}
-                    {profile.type === "lens" && <LensCard profile={profile} />}
+                     {profile.type === "ens" && <ENSCard profile={profile} />}
+                    {/* {profile.type === "farcaster" && <FarcasterCard profile={profile} />}
+                    {profile.type === "lens" && <LensCard profile={profile} />} */}
                   </div>
                 ))
               ) : hasSearched ? (
