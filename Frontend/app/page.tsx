@@ -8,6 +8,7 @@ import { getSocialProfiles } from "thirdweb/social";
 import { shortenAddress } from "thirdweb/utils";
 import CardSkeleton from "./components/CardSkeleton";
 import ENSCard from "./components/ENSCard";
+import FarcasterCard from "./components/FarcasterCard";
 
 type FilterType = "all" | "ens" | "farcaster" | "lens";
 
@@ -118,8 +119,8 @@ export default function Home() {
                 filteredProfiles.map((profile, index) => (
                   <div key={index} className="w-full h-full">
                      {profile.type === "ens" && <ENSCard profile={profile} />}
-                    {/* {profile.type === "farcaster" && <FarcasterCard profile={profile} />}
-                    {profile.type === "lens" && <LensCard profile={profile} />} */}
+                    {profile.type === "farcaster" && <FarcasterCard profile={profile} />}
+                    {/* {profile.type === "lens" && <LensCard profile={profile} />} */}
                   </div>
                 ))
               ) : hasSearched ? (
